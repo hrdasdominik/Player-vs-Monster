@@ -58,32 +58,38 @@ public class Main {
         System.out.println("FIGHT!");
 
         // Svaki novi turn, turn se mora povecati za 1
-        while(playerIsAlive == true && monsterIsAlive == true) {
+        while (playerIsAlive == true && monsterIsAlive == true) {
 
             // EVENT 1
 
-            turn += 1;
-            System.out.println("Turn: " + turn);
+            turn = turnCount(turn);
 
-            lightAttack(playerName, monsterName, playerStamina, monsterHealth, playerDamage);
+            monsterHealth = lightAttack(playerName, monsterName, playerStamina, monsterHealth, playerDamage);
+            monsterIsAlive = checkHealth(monsterHealth, monsterName);
+            if (monsterIsAlive == false) {
+                break;
+            }
 
             System.out.println("================================================");
 
             // EVENT 2
 
-            turn += 1;
-            System.out.println("Turn: " + turn);
+            turn = turnCount(turn);
 
-            heavyAttack(monsterName, playerName, monsterStamina, playerHealth, monsterDamage);
+            playerHealth = heavyAttack(monsterName, playerName, monsterStamina, playerHealth, monsterDamage);
+            playerIsAlive = checkHealth(playerHealth, playerName);
+            if (playerIsAlive == false) {
+                break;
+            }
 
             System.out.println("================================================");
 
             // EVENT 3
 
-            turn += 1;
-            System.out.println("Turn: " + turn);
+            turn = turnCount(turn);
             System.out.println(playerName + " your turn!");
             System.out.println(playerName + " tries to defend!");
+
 
             playerHealth += playerDefense;
 
@@ -91,30 +97,23 @@ public class Main {
 
             // EVENT 4
 
-            turn += 1;
-            System.out.println("Turn: " + turn);
+            turn = turnCount(turn);
 
-            lightAttack(monsterName, playerName, monsterStamina, playerHealth, monsterDamage);
+            playerHealth = lightAttack(monsterName, playerName, monsterStamina, playerHealth, monsterDamage);
+            playerIsAlive = checkHealth(playerHealth, playerName);
+            if (playerIsAlive == false) {
+                break;
+            }
 
             System.out.println("================================================");
 
-            if(playerHealth <= 0) {
-                playerIsAlive = false;
-                System.out.println(playerName + " is dead!");
-            }
-
-            else if(monsterHealth <= 0) {
-                monsterIsAlive = false;
-                System.out.println(monsterName + " is dead!");
-                System.out.println(monsterName + " will be back!");
-            }
         }
     }
 
     // <====================================== GAME FUNCTIONS ================================================>
 
-                                        // playerName,          monsterName,      playerStamina,       monsterHealth,      playerDamage
-    public static void lightAttack(String attackerName, String defenderName, int attackerStamina, int defenderHealth, int attackerDamage) {
+    // playerName,          monsterName,      playerStamina,       monsterHealth,      playerDamage
+    public static int lightAttack(String attackerName, String defenderName, int attackerStamina, int defenderHealth, int attackerDamage) {
         System.out.println(attackerName + " your turn!");
         System.out.println(attackerName + " tries to light attack " + defenderName);
 
@@ -123,16 +122,35 @@ public class Main {
 
         System.out.println(defenderName + " lost " + attackerDamage + " health points!");
         System.out.println(defenderName + " now has " + defenderHealth + " health points!");
+
+        return defenderHealth;
     }
 
-    public static void heavyAttack(String attackerName, String defenderName, int attackerStamina, int defenderHealth, int attackerDamage) {
+    public static int heavyAttack(String attackerName, String defenderName, int attackerStamina, int defenderHealth, int attackerDamage) {
         System.out.println(attackerName + " your turn!");
         System.out.println(attackerName + " tries to heavy attack " + defenderName);
 
         attackerStamina -= 4;
         defenderHealth -= attackerDamage * 2;
 
-        System.out.println(defenderName + " lost " + attackerDamage*2 + " health points!");
+        System.out.println(defenderName + " lost " + attackerDamage * 2 + " health points!");
         System.out.println(defenderName + " now has " + defenderHealth + " health points!");
+
+        return defenderHealth;
+    }
+
+    public static int turnCount(int turn) {
+        turn += 1;
+        System.out.println("Turn: " + turn);
+        return turn;
+    }
+
+    public static boolean checkHealth(int health, String name) {
+        if (health <= 0) {
+            System.out.println(name + " is dead!");
+            return false;
+        } else {
+            return true;
+        }
     }
 }
